@@ -38,13 +38,11 @@ genai.configure(api_key=st.secrets["api_key"])
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
 K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky.
-Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako kontext.
-Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Přechod na aktuální model z března 2026
+# Tato verze v roce 2026 nahradila starou 1.5 a je dostupná všude
 model = genai.GenerativeModel(
-    model_name='gemini-3.1-flash', 
+    model_name='gemini-2.0-flash', 
     system_instruction=instruction
 )
 
