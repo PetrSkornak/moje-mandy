@@ -7,15 +7,7 @@ API_KEY = "AIzaSyBs-y9JE43S33RSGX28MuXpMR1DI3Rxij0"
 genai.configure(api_key=st.secrets["api_key"])
 LOG_FILE = "mandy_pamet.txt"
 
-# --- 2. AUTOMATICKÝ VÝBĚR MODELU ---
-@st.cache_resource
-def najdi_model():
-    for m in genai.list_models():
-        if 'generateContent' in m.supported_generation_methods:
-            return m.name
-    return "gemini-1.5-flash" # nouzovka
-
-MODEL_NAME = najdi_model()
+MODEL_NAME = "models/gemini-1.5-flash"
 
 # --- 3. PAMĚŤ ---
 def nacti_historii():
