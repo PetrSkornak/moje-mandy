@@ -13,8 +13,15 @@ st.title("Mandy 💃")
 @st.cache_resource
 def get_gsheet_client():
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    # Bere údaje z nastavení Secrets ve Streamlitu
-    creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scope)
+    # Tady se děje to kouzlo, které opraví tu chybu PEM:
+    creds_info = st.secrets["gcp_service_account"]
+    if isinstance(creds_info, st.runtime.secrets.AttrDict):
+        creds_info = dict(creds_info)
+    
+    # Oprava zalomení řádků v klíči
+    creds_info["private_key"] = creds_info["private_key"].replace("\\n", "\n")
+    
+    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
 try:
