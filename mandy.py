@@ -1,7 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
 from PIL import Image
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import gspread
 
 # Nastavení stránky
@@ -34,14 +33,8 @@ def save_to_sheets(role, content):
         pass
 
 # --- KONFIGURACE GEMINI ---
+# Používáme stabilní transport a API klíč
 genai.configure(api_key=st.secrets["api_key"])
-
-# --- KONFIGURACE GEMINI ---
-genai.configure(api_key=st.secrets["api_key"])
-
-# --- KONFIGURACE GEMINI ---
-# Tady vynutíme nejnovější verzi rozhraní pro rok 2026
-genai.configure(api_key=st.secrets["api_key"], transport='rest') 
 
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
@@ -50,9 +43,9 @@ Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako k
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Použijeme přesný název pro Gemini 3
+# V roce 2026 je tento název nejjistější cesta, jak se vyhnout 404
 model = genai.GenerativeModel(
-    model_name='gemini-3-flash',
+    model_name='gemini-1.5-flash',
     system_instruction=instruction
 )
 
@@ -77,7 +70,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-# Vstup od uživatele
+# Vstup
 if prompt := st.chat_input("Co máš na srdci?"):
     with st.chat_message("user"):
         st.markdown(prompt)
