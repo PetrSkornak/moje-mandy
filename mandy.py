@@ -3,7 +3,6 @@ import google.generativeai as genai
 from PIL import Image
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import gspread
-from google.oauth2.service_account import Credentials
 
 # Nastavení stránky
 st.set_page_config(page_title="Mandy 💃", layout="centered")
@@ -12,44 +11,27 @@ st.title("Mandy 💃")
 # --- PROPOJENÍ S GOOGLE SHEETS ---
 @st.cache_resource
 def get_gsheet_client():
-    # Streamlit má na tohle speciální funkci, která si s tím poradí lépe
+    # Použijeme nejspolehlivější metodu pro Streamlit
     return gspread.service_account_from_dict(st.secrets["gcp_service_account"])
 
 try:
     client = get_gsheet_client()
-    # Použijeme ID tvé tabulky a vezmeme první list
-    sheet = client.open_by_key("1qRrw74IAnlbu4bgdywG2|YJTH3cPLbhSjYg").get_worksheet(0)
-except Exception as e:
-    st.error(f"Nepodařilo se připojit k tabulce: {e}")
-    st.stop()
-    
-    # Oprava zalomení řádků v klíči
-    creds_info["private_key"] = creds_info["private_key"].replace("\\n", "\n")
-    
-    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-    return gspread.authorize(creds)
-
-try:
-    client = get_gsheet_client()
-    # ID tvojí tabulky
+    # Tvoje ID tabulky (opravené)
     sheet = client.open_by_key("1qRrw74IAnlbu4bgdywG2nEHnlEqZIYJTH3cPLbhSjYg").get_worksheet(0)
 except Exception as e:
     st.error(f"Nepodařilo se připojit k tabulce: {e}")
     st.stop()
 
 def load_history_from_sheets():
-    # Načte řádky a převede je na formát pro chat
     rows = sheet.get_all_records()
     return [{"role": r["role"], "content": r["content"]} for r in rows]
 
 def save_to_sheets(role, content):
-    # Zapíše novou zprávu do tabulky
     sheet.append_row([role, content])
 
 # --- KONFIGURACE GEMINI ---
 genai.configure(api_key=st.secrets["api_key"])
 
-# Tady je ta lidštější Mandy bez konkrétních názvů firem a měst
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
 K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky.
@@ -65,25 +47,29 @@ model = genai.GenerativeModel(
 
 # --- CHAT LOGIKA ---
 if "messages" not in st.session_state:
-    with st.spinner("Mandy si vzpomíná, o čem jste mluvili..."):
-        st.session_state.messages = load_history_from_sheets()
+    with st.spinner("Mandy si vzpomíná..."):
+        try:
+            st.session_state.messages = load_history_from_sheets()
+        except:
+            st.session_state.messages = []
 
-# Sidebar pro doplňky
+# Sidebar
 with st.sidebar:
     st.header("Přílohy")
     uploaded_file = st.file_uploader("Pošli fotku...", type=["jpg", "png", "jpeg"])
     if st.button("Smazat paměť"):
         sheet.clear()
-        sheet.append_row(["role", "content"]) # Obnova hlavičky
+        sheet.append_row(["role", "content"])
         st.session_state.messages = []
         st.rerun()
 
-# Zobrazení historie chatu
+# Zobrazení historie
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    if message["role"] in ["user", "assistant"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-# Vstup od uživatele
+# Vstup
 if prompt := st.chat_input("Co máš na srdci?"):
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -93,7 +79,6 @@ if prompt := st.chat_input("Co máš na srdci?"):
 
     with st.chat_message("assistant"):
         try:
-            # Posíláme Gemini posledních 15 zpráv jako kontext
             history_for_gemini = []
             for m in st.session_state.messages[-15:]:
                 history_for_gemini.append({"role": m["role"], "parts": [m["content"]]})
@@ -113,4 +98,4 @@ if prompt := st.chat_input("Co máš na srdci?"):
             save_to_sheets("assistant", full_response)
             
         except Exception as e:
-            st.error(f"Chyba: {e}")
+            st.error(f"Chyba Gemini: {e}")
