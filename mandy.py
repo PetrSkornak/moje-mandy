@@ -5,7 +5,7 @@ import os
 # --- 1. NASTAVENÍ ---
 # Klíč bereme bezpečně ze Secrets
 genai.configure(api_key=st.secrets["api_key"])
-MODEL_NAME = "gemini-1.5-flash"
+MODEL_NAME = "gemini-pro"
 
 # --- 2. PAMĚŤ ---
 def nacti_historii():
