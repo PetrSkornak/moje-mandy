@@ -12,11 +12,16 @@ st.title("Mandy 💃")
 # --- PROPOJENÍ S GOOGLE SHEETS ---
 @st.cache_resource
 def get_gsheet_client():
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    # Tady se děje to kouzlo, které opraví tu chybu PEM:
-    creds_info = st.secrets["gcp_service_account"]
-    if isinstance(creds_info, st.runtime.secrets.AttrDict):
-        creds_info = dict(creds_info)
+    # Streamlit má na tohle speciální funkci, která si s tím poradí lépe
+    return gspread.service_account_from_dict(st.secrets["gcp_service_account"])
+
+try:
+    client = get_gsheet_client()
+    # Použijeme ID tvé tabulky a vezmeme první list
+    sheet = client.open_by_key("1qRrw74IAnlbu4bgdywG2|YJTH3cPLbhSjYg").get_worksheet(0)
+except Exception as e:
+    st.error(f"Nepodařilo se připojit k tabulce: {e}")
+    st.stop()
     
     # Oprava zalomení řádků v klíči
     creds_info["private_key"] = creds_info["private_key"].replace("\\n", "\n")
