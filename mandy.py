@@ -5,8 +5,7 @@ import os
 # --- 1. NASTAVENÍ ---
 # Přidáme tam verzi v1, aby nás to neházelo do té "beta" chyby
 genai.configure(api_key=st.secrets["api_key"])
-MODEL_NAME = "gemini-1.5-flash"
-
+model_name='gemini-pro'
 # --- 2. PAMĚŤ ---
 def nacti_historii():
     if "messages" not in st.session_state:
