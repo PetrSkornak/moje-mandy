@@ -20,7 +20,7 @@ def get_gsheet_client():
 try:
     client = get_gsheet_client()
     # ID tvojí tabulky
-    sheet = client.open_by_key("1qRrw74IAnlbu4bgdywG2nEHnlEqZIYJTH3cPLbhSjYg").sheet1
+    sheet = client.open_by_key("1qRrw74IAnlbu4bgdywG2nEHnlEqZIYJTH3cPLbhSjYg").get_worksheet(0)
 except Exception as e:
     st.error(f"Nepodařilo se připojit k tabulce: {e}")
     st.stop()
