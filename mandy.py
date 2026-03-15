@@ -33,9 +33,6 @@ def save_to_sheets(role, content):
         pass
 
 # --- KONFIGURACE GEMINI ---
-# Tímto explicitně říkáme: Použij ostrou verzi v1, ne betu!
-from google.ai import generativelanguage_v1 as gl
-
 genai.configure(api_key=st.secrets["api_key"])
 
 instruction = """
@@ -45,9 +42,9 @@ Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako k
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Nasazujeme Gemini 3.1 Flash - aktuální model pro rok 2026
+# Zkusíme tuhle verzi - je to stabilní nástupce pro konverzační agenty
 model = genai.GenerativeModel(
-    model_name='gemini-3.1-flash',
+    model_name='gemini-2.0-flash-lite-preview-0925',
     system_instruction=instruction
 )
 
