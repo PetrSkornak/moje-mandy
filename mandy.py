@@ -4,7 +4,7 @@ import os
 
 # --- 1. NASTAVENÍ ---
 API_KEY = "AIzaSyBs-y9JE43S33RSGX28MuXpMR1DI3Rxij0"
-genai.configure(api_key=API_KEY)
+genai.configure(api_key="AIzaSyBs-y9JE43S33RSGX28MuXpMR1DI3Rxij0")
 LOG_FILE = "mandy_pamet.txt"
 
 # --- 2. AUTOMATICKÝ VÝBĚR MODELU ---
