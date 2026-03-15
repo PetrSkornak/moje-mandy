@@ -7,7 +7,7 @@ API_KEY = "AIzaSyBs-y9JE43S33RSGX28MuXpMR1DI3Rxij0"
 genai.configure(api_key=st.secrets["api_key"])
 LOG_FILE = "mandy_pamet.txt"
 
-MODEL_NAME = "models/gemini-1.5-flash"
+MODEL_NAME = "gemini-1.5-flash"
 
 # --- 3. PAMĚŤ ---
 def nacti_historii():
