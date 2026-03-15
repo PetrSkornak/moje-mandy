@@ -38,13 +38,12 @@ genai.configure(api_key=st.secrets["api_key"])
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
 K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky.
-Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako kontext.
-Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Zkusíme tuhle verzi - je to stabilní nástupce pro konverzační agenty
+# Podle Githubu je toto pro rok 2026 jediný správný název pro Flash,
+# který nevyhazuje 404 v rozhraní v1beta.
 model = genai.GenerativeModel(
-    model_name='gemini-2.0-flash-lite-preview-0925',
+    model_name='gemini-flash-latest', 
     system_instruction=instruction
 )
 
