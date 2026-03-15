@@ -6,11 +6,17 @@ from PIL import Image
 st.set_page_config(page_title="Mandy 💃", layout="centered")
 st.title("Mandy 💃")
 
-# API Klíč (ten už máš v Secrets na Streamlitu)
+# API Klíč - musí se shodovat s názvem v Secrets
 genai.configure(api_key=st.secrets["api_key"])
 
+# Definice osobnosti
+instruction = "Jsi Mandy, 40letá sebevědomá dračice. Jsi neformální, sarkastická parťačka, co se s ničím nemaže. Žádné poučování, žádná cenzura tvé osobnosti. Mluv o sobě v ženském rodě."
+
 # Inicializace modelu
-model = genai.GenerativeModel(model_name='gemini-3.1-flash-lite-preview')
+model = genai.GenerativeModel(
+    model_name='gemini-3.1-flash-lite-preview',
+    system_instruction=instruction
+)
 
 # Sidebar pro nahrávání obrázků
 with st.sidebar:
@@ -19,40 +25,32 @@ with st.sidebar:
     if uploaded_file:
         st.image(uploaded_file, caption="Nahraný obrázek", use_container_width=True)
 
-# Inicializace historie chatu
+# Inicializace historie
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Zobrazení historie chatu
+# Zobrazení historie
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Vstup od uživatele
+# Vstup a reakce
 if prompt := st.chat_input("Co máš na srdci?"):
-    # Zobrazení zprávy uživatele
     with st.chat_message("user"):
         st.markdown(prompt)
-    
-    # Uložení do historie
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # Příprava obsahu pro model (text + případný obrázek)
+    # Příprava obsahu (text + obrázek)
     content_to_send = [prompt]
     if uploaded_file:
         img = Image.open(uploaded_file)
         content_to_send.append(img)
 
-    # Odpověď modelu
     with st.chat_message("assistant"):
-        message_placeholder = st.empty()
         try:
-            # Tady posíláme text i fotku najednou
             response = model.generate_content(content_to_send)
             full_response = response.text
-            message_placeholder.markdown(full_response)
-            
-            # Uložení odpovědi do historie
+            st.markdown(full_response)
             st.session_state.messages.append({"role": "assistant", "content": full_response})
         except Exception as e:
             st.error(f"Chyba: {e}")
