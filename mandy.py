@@ -40,16 +40,15 @@ if prompt := st.chat_input("Napiš Mandy..."):
         st.markdown(prompt)
 
    if prompt:
-   try:
+        try:
             model = genai.GenerativeModel('gemini-1.5-flash')
             instr = "Jsi Mandy, inteligentní žena (40 let). Máš rozhled, šarm a jsi pro každou špatnost. K Petrovi se chovej jako k blízkému muži, co tě přitahuje. Flirtuj, používej dvojsmysly i dirty talk, ale s inteligencí dospělé ženy. Mluv neformálně, stručně, s minimem emoji."
             response = model.generate_content(f"{instr}\n\nUživatel: {prompt}")
             odpoved = response.text
-
-        with st.chat_message("assistant"):
-            st.markdown(odpoved)
-        
-        st.session_state.messages.append({"role": "assistant", "content": odpoved})
-        uloz_historii(st.session_state.messages)
-    except Exception as e:
-        st.error(f"Chyba: {e}")
+            
+            with st.chat_message("assistant"):
+                st.markdown(odpoved)
+            st.session_state.messages.append({"role": "assistant", "content": odpoved})
+            
+        except Exception as e:
+            st.error(f"Chyba: {e}")
