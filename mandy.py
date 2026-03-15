@@ -29,12 +29,9 @@ def load_history_from_sheets():
 
 def save_to_sheets(role, content):
     try:
-        sheet.append_row([role, content])
+        sheet.append_row([str(role), str(content)])
     except:
         pass
-
-# --- KONFIGURACE GEMINI ---
-genai.configure(api_key=st.secrets["api_key"])
 
 # --- KONFIGURACE GEMINI ---
 genai.configure(api_key=st.secrets["api_key"])
@@ -46,33 +43,16 @@ Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako k
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Nový, stabilnější způsob nastavení filtrů
-safety_settings = [
-    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
-    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-]
-
+# Použijeme standardní filtry, které Google v roce 2026 nezablokuje
 model = genai.GenerativeModel(
     model_name='gemini-1.5-flash-latest',
-    system_instruction=instruction,
-    safety_settings=safety_settings
-)
-
-model = genai.GenerativeModel(
-    model_name='gemini-1.5-flash-latest',
-    system_instruction=instruction,
-    safety_settings={cat: HarmBlockThreshold.BLOCK_NONE for cat in HarmCategory}
+    system_instruction=instruction
 )
 
 # --- CHAT LOGIKA ---
 if "messages" not in st.session_state:
     with st.spinner("Mandy si vzpomíná..."):
-        try:
-            st.session_state.messages = load_history_from_sheets()
-        except:
-            st.session_state.messages = []
+        st.session_state.messages = load_history_from_sheets()
 
 # Sidebar
 with st.sidebar:
@@ -90,7 +70,7 @@ for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-# Vstup
+# Vstup od uživatele
 if prompt := st.chat_input("Co máš na srdci?"):
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -102,7 +82,7 @@ if prompt := st.chat_input("Co máš na srdci?"):
         try:
             history_for_gemini = []
             for m in st.session_state.messages[-15:]:
-                history_for_gemini.append({"role": m["role"], "parts": [m["content"]]})
+                history_for_gemini.append({"role": m["role"], "parts": [str(m["content"])]})
             
             chat = model.start_chat(history=history_for_gemini[:-1])
             
