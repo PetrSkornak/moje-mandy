@@ -36,6 +36,9 @@ def save_to_sheets(role, content):
 # --- KONFIGURACE GEMINI ---
 genai.configure(api_key=st.secrets["api_key"])
 
+# --- KONFIGURACE GEMINI ---
+genai.configure(api_key=st.secrets["api_key"])
+
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
 K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky.
@@ -43,9 +46,9 @@ Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako k
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# Použijeme standardní filtry, které Google v roce 2026 nezablokuje
+# Přechod na Gemini 3 Flash
 model = genai.GenerativeModel(
-    model_name='gemini-1.5-flash-latest',
+    model_name='gemini-3-flash',
     system_instruction=instruction
 )
 
