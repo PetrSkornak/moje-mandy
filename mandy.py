@@ -36,13 +36,29 @@ def save_to_sheets(role, content):
 # --- KONFIGURACE GEMINI ---
 genai.configure(api_key=st.secrets["api_key"])
 
-# TVOJE PŮVODNÍ INSTRUKCE
+# --- KONFIGURACE GEMINI ---
+genai.configure(api_key=st.secrets["api_key"])
+
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
 K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky.
 Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako kontext.
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
+
+# Nový, stabilnější způsob nastavení filtrů
+safety_settings = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+]
+
+model = genai.GenerativeModel(
+    model_name='gemini-1.5-flash-latest',
+    system_instruction=instruction,
+    safety_settings=safety_settings
+)
 
 model = genai.GenerativeModel(
     model_name='gemini-1.5-flash-latest',
