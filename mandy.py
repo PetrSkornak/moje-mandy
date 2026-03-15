@@ -49,7 +49,7 @@ if prompt := st.chat_input("Napiš Mandy..."):
 
     try:
         model = genai.GenerativeModel(MODEL_NAME)
-        instr = "Jsi Mandy, vtipná kámoška, tykáš, mluvíš neformálně a stručně."
+        instr = "Jsi Mandy, inteligentní žena (40 let). Máš rozhled, šarm a jsi pro každou špatnost. K Petrovi se chovej jako k blízkému muži, co tě přitahuje. Flirtuj, používej dvojsmysly i dirty talk, ale s inteligencí dospělé ženy. Mluv neformálně, stručně, s minimem emoji."
         response = model.generate_content(f"{instr}\n\nUživatel: {prompt}")
         odpoved = response.text
 
