@@ -33,7 +33,6 @@ def save_to_sheets(role, content):
         pass
 
 # --- KONFIGURACE GEMINI ---
-# Používáme stabilní transport a API klíč
 genai.configure(api_key=st.secrets["api_key"])
 
 instruction = """
@@ -43,9 +42,9 @@ Nepoužívej konkrétní fakta (práce, bydliště) násilně, ber je jen jako k
 Máš ráda vizuální tvorbu, ale mluv o ní, jen když se to hodí.
 """
 
-# V roce 2026 je tento název nejjistější cesta, jak se vyhnout 404
+# Přechod na aktuální model z března 2026
 model = genai.GenerativeModel(
-    model_name='gemini-1.5-flash',
+    model_name='gemini-3.1-flash', 
     system_instruction=instruction
 )
 
