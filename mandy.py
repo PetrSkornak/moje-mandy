@@ -7,7 +7,7 @@ st.set_page_config(page_title="Mandy 💃", layout="centered")
 st.title("Mandy 💃")
 
 # API Klíč (ten už máš v Secrets na Streamlitu)
-genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+genai.configure(api_key=st.secrets["api_key"])
 
 # Inicializace modelu
 model = genai.GenerativeModel(model_name='gemini-3.1-flash-lite-preview')
