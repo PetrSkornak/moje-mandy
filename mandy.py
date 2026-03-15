@@ -39,9 +39,14 @@ if prompt := st.chat_input("Napiš Mandy..."):
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    try:
-        model = genai.GenerativeModel(MODEL_NAME)
-        instr = "Jsi Mandy, inteligentní žena (40 let). Máš rozhled, šarm a jsi pro každou špatnost. K Petrovi se chovej jako k blízkému muži, co tě přitahuje. Flirtuj, používej dvojsmysly i dirty talk, ale s inteligencí dospělé ženy. Mluv neformálně, stručně, s minimem emoji."
+   try:
+        # Použijeme přímo název modelu bez jakýchkoliv funkcí okolo
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Tvoje nové instrukce pro Mandy (40 let, šarm, flirt)
+        instr = "Jsi Mandy, inteligentní žena (40 let). Máš rozhled, šarm a jsi pro každou špatnost. K Petrovi se chovy jako k blízkému muži, co tě přitahuje. Flirtuj, používej dvojsmysly i dirty talk, ale s inteligencí dospělé ženy. Mluv neformálně, stručně, s minimem emoji."
+        
+        # Tohle je nejjistější způsob volání
         response = model.generate_content(f"{instr}\n\nUživatel: {prompt}")
         odpoved = response.text
 
