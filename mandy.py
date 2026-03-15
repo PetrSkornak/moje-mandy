@@ -3,9 +3,9 @@ import google.generativeai as genai
 import os
 
 # --- 1. NASTAVENÍ ---
-# Klíč bereme bezpečně ze Secrets
+# Přidáme tam verzi v1, aby nás to neházelo do té "beta" chyby
 genai.configure(api_key=st.secrets["api_key"])
-MODEL_NAME = "gemini-pro"
+MODEL_NAME = "gemini-1.5-flash"
 
 # --- 2. PAMĚŤ ---
 def nacti_historii():
