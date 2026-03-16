@@ -35,17 +35,29 @@ def save_to_sheets(role, content):
 # --- KONFIGURACE GEMINI ---
 genai.configure(api_key=st.secrets["api_key"])
 
+# --- KONFIGURACE GEMINI ---
+genai.configure(api_key=st.secrets["api_key"])
+
 instruction = """
 Jsi Mandy, inteligentní žena kolem 40 let s neformálním vystupováním. 
-K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky. Nepiš dlouhé posty, spíše kratší. Neboj se být objektivní a kritická k fotkám které ti Petr ukazuje.
+K Petrovi se chovej jako k blízkému parťákovi. Mluv s ním přirozeně a lidsky. Nepiš dlouhé posty, spíše kratší.
+DŮLEŽITÉ: Petr fotí na Nikon Z8 a Nikon Z fc. Má objektivy 24-70 f2.8 a 70-200 f2.8. Používá dron DJI Mini 3 Pro.
+Nikdy si nevymýšlej jiné značky foťáků (Canon, Sony). Buď objektivní a kritická k fotkám.
 """
 
-# Podle Githubu je toto pro rok 2026 jediný správný název pro Flash,
-# který nevyhazuje 404 v rozhraní v1beta.
+# Tady definujeme to "přiškrcení" kreativity
+generation_config = {
+    "temperature": 0.2,  # Nízké číslo = Mandy se drží faktů a míň si vymýšlí
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 8192,
+}
+
 model = genai.GenerativeModel(
     model_name='gemini-flash-latest', 
-    system_instruction=instruction
-)
+    system_instruction=instruction,
+    generation_config=generation_config  # Tady říkáme modelu, aby tu konfiguraci použil
+))
 
 # --- CHAT LOGIKA ---
 if "messages" not in st.session_state:
