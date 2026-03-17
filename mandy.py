@@ -57,7 +57,7 @@ model = genai.GenerativeModel(
     model_name='gemini-flash-latest', 
     system_instruction=instruction,
     generation_config=generation_config  # Tady říkáme modelu, aby tu konfiguraci použil
-))
+)
 
 # --- CHAT LOGIKA ---
 if "messages" not in st.session_state:
